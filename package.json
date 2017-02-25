@@ -1,0 +1,23 @@
+{
+  "name": "api-simplesuspect",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplesuspect/api-simplesuspect.git"
+  },
+  "author": "Nicholas Kristoffersen <nicholas.kristoffersen@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simplesuspect/api-simplesuspect/issues"
+  },
+  "homepage": "https://github.com/simplesuspect/api-simplesuspect#readme",
+  "dependencies": {
+    "express": "^4.14.1",
+    "request": "^2.79.0"
+  }
+}
