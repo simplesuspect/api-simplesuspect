@@ -45,6 +45,11 @@ app.post('/s', function (req, res) {
 
 	facePromise.then(function (response) {
 		var faceId = response[0].faceId;
+
+		if (!faceId) {
+			res.status(404).send("Face not found");
+		}
+
 		var faceRectangle = response[0].faceRectangle;
 		var faceAttributes = response[0].faceAttributes;
 
