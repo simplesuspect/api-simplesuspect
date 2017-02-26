@@ -9,7 +9,11 @@ const key = "5a7bc1aa7775473dbc2a587a623682d5";
 const oxford = require('project-oxford');
 const client = new oxford.Client(key, 'https://westus.api.cognitive.microsoft.com');
 const port = process.env.PORT || 8080;
-
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
