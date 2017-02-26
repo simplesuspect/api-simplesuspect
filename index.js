@@ -58,21 +58,23 @@ app.post('/s', function (req, res) {
 				data: buffer,
 				faceRectangles: [faceRectangle]
 			});
-			
-		Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
-			var personId = null;
-			var emotionPromise = responses[1];
-			var identityResponse = responses[0];
-			var score = emotionPromise[0].scores;
-			var candidates = identityResponse[0].candidates;
 
-			var data = {
-				age: faceAttributes.age,
-				gender: faceAttributes.gender,
-				emotion: responses[1],
-				person: null,
-				dangerZone: dangerZone.dangerZone(score.anger)
-			};			
+			Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
+				var personId = null;
+				var emotionPromise = responses[1];
+				var identityResponse = responses[0];
+				var score = emotionPromise[0].scores;
+				var candidates = identityResponse[0].candidates;
+
+				var data = {
+					age: faceAttributes.age,
+					gender: faceAttributes.gender,
+					emotion: responses[1],
+					person: null,
+					dangerZone: dangerZone.dangerZone(score.anger),
+					lyiingLevel: dangerZone.lying(score.sadness)
+					
+				};			
 
 				if (candidates.length > 0) {
 					personId = candidates[0].personId;
