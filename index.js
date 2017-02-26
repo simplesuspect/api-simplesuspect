@@ -58,8 +58,7 @@ app.post('/s', function (req, res) {
 				data: buffer,
 				faceRectangles: [faceRectangle]
 			});
-
-<<<<<<< HEAD
+			
 		Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
 			var personId = null;
 			var emotionPromise = responses[1];
@@ -74,23 +73,6 @@ app.post('/s', function (req, res) {
 				person: null,
 				dangerZone: dangerZone.dangerZone(score.anger)
 			};			
-=======
-			Promise.all([identifyPromise, emotionPromise]).then(function (responses) {
-				var identityResponse = responses[0];
-				var emotionPromise = responses[1];
-				var candidates = identityResponse[0].candidates;
-				var score = emotionPromise[0].scores;
-				var personId = null;
-				var averageEmotions = score.anger + score.contempt / 2;
-
-				var data = {
-					age: faceAttributes.age,
-					gender: faceAttributes.gender,
-					emotion: responses[1],
-					person: null,
-					dangerZone: dangerZone.dangerZone(averageEmotions)
-				};
->>>>>>> origin/master
 
 				if (candidates.length > 0) {
 					personId = candidates[0].personId;
@@ -106,8 +88,6 @@ app.post('/s', function (req, res) {
 		}
 	});
 });
-
-
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
