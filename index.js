@@ -47,7 +47,6 @@ app.post('/s', function (req, res) {
 		if (response == null || response.length === 0) {
 			res.status(404).send("Face not found");
 		}
-
 		var faceId = response[0].faceId;
 
 		var faceRectangle = response[0].faceRectangle;
@@ -64,20 +63,23 @@ app.post('/s', function (req, res) {
 			var identityResponse = responses[0];
 			var candidates = identityResponse[0].candidates;
 			var personId = null;
+			var data = {
+				age: faceAttributes.age,
+				gender: faceAttributes.gender,
+				emotion: responses[1],
+				person: null
+			};
 
 			if (candidates.length > 0) {
 				personId = candidates[0].personId;
-			}
 
-			faceClient.face.person.get("1", personId).then(function(person) {
-				var data = {
-					age: faceAttributes.age,
-					gender: faceAttributes.gender,
-					emotion: responses[1],
-					person: person
-				};
+				faceClient.face.person.get("1", personId).then(function(person) {
+					data.person = person;
+					res.status(200).send(data);
+				});
+			} else {
 				res.status(200).send(data);
-			});
+			}
 		})
 	});
 });
