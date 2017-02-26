@@ -1,13 +1,11 @@
-exports.decodeBase64Image = function(dataString) {
-  var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-     response = {};
-
-  if (matches.length !== 3) {
-    return new Error('Invalid input string');
-  }
-
-  response.type = matches[1];
-  response.data = new Buffer(matches[2], 'base64');
-
+exports.dangerZone = function(averageEmotions) {
+var response = null;
+if(averageEmotions <= .3) {
+    response = "no danger";
+ }else if(averageEmotions > .3 && averageEmotions < .6) {
+    response = "caution";
+ }else {
+    response = "danger zone";
+ }
   return response;
 }

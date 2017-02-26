@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const server = require('http').createServer(app);
 const path = require('path');
-
+const dangerZone = require('./utility.js');
 const faceKey = "5a7bc1aa7775473dbc2a587a623682d5";
 const emotionKey = "0bff0c825fb84444bb8ca71458b5dd34";
 const oxford = require('project-oxford');
@@ -61,14 +61,19 @@ app.post('/s', function (req, res) {
 
 		Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
 			var identityResponse = responses[0];
+			var emotionPromise = responses[1];
 			var candidates = identityResponse[0].candidates;
+			var score = emotionPromise[0].scores;
 			var personId = null;
+			var averageEmotions = (score.anger + score.contempt + score.disgust) / 3;
+
 			var data = {
 				age: faceAttributes.age,
 				gender: faceAttributes.gender,
 				emotion: responses[1],
-				person: null
-			};
+				person: null,
+				dangerZone: dangerZone.dangerZone(averageEmotions)
+			};			
 
 			if (candidates.length > 0) {
 				personId = candidates[0].personId;
@@ -83,6 +88,8 @@ app.post('/s', function (req, res) {
 		})
 	});
 });
+
+
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
