@@ -26,22 +26,41 @@ app.post('/s', function (req, res) {
 		analyzesAge: true,
 		analyzesGender: true,
 		//analyzesFaceLandmarks: true,
-		analyzesSmile: true,
-		analyzesFacialHair: true,
-		analyzesHeadPose: true
+		//analyzesSmile: true,
+		//analyzesFacialHair: true,
+		//analyzesHeadPose: true
 	});
 
 	facePromise.then(function(response){
 		var faceId = response[0].faceId;
+		var faceRectangle = response[0].faceRectangle;
+		var faceAttributes = response[0].faceAttributes;
 
 		var identifyPromise = faceClient.face.identify([faceId], "1", 1, 0.5);
 
 		var emotionPromise = emotionClient.emotion.analyzeEmotion ({
-			data: buffer
+			data: buffer,
+			faceRectangles: [faceRectangle]
 		});
 
 		Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
-			res.status(200).send(responses);
+			var identityResponse = responses[0];
+			var candidates = identityResponse[0].candidates;
+			var personId = null;
+
+			if (candidates.length > 0) {
+				personId = candidates[0].personId;
+			}
+
+			faceClient.face.person.get("1", personId).then(function(person) {
+				var data = {
+					age: faceAttributes.age,
+					gender: faceAttributes.gender,
+					emotion: responses[1],
+					person: person
+				};
+				res.status(200).send(data);
+			});
 		})
 	});
 });
