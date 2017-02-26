@@ -12,6 +12,18 @@ const faceClient = new oxford.Client(faceKey, 'https://westus.api.cognitive.micr
 const emotionClient = new oxford.Client(emotionKey, 'https://westus.api.cognitive.microsoft.com');
 const port = process.env.PORT || 8080;
 
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
+app.use(bodyParser.json({
+	limit: '5mb'
+}));
+app.use(bodyParser.urlencoded({
+	limit: '5mb'
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
@@ -31,7 +43,7 @@ app.post('/s', function (req, res) {
 		//analyzesHeadPose: true
 	});
 
-	facePromise.then(function(response){
+	facePromise.then(function (response) {
 		var faceId = response[0].faceId;
 		var faceRectangle = response[0].faceRectangle;
 		var faceAttributes = response[0].faceAttributes;
