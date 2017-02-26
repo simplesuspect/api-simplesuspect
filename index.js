@@ -8,6 +8,8 @@ const path = require('path');
 const key = "5a7bc1aa7775473dbc2a587a623682d5";
 const oxford = require('project-oxford');
 const client = new oxford.Client(key, 'https://westus.api.cognitive.microsoft.com');
+const port = process.env.PORT || 8080;
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -27,11 +29,11 @@ app.post('/s', function (req, res) {
 		analyzesHeadPose: true
 	}).then(function (response) {
 		console.log(response);
-		
+
 		res.status(200).send(response);
 	});
 });
 
-server.listen(3001, function () {
-	console.log('Server listening at port %d', 3001);
+server.listen(port, function () {
+	console.log('Server listening at port %d', port);
 });
