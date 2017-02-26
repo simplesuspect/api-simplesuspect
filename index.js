@@ -65,7 +65,7 @@ app.post('/s', function (req, res) {
 			var candidates = identityResponse[0].candidates;
 			var score = emotionPromise[0].scores;
 			var personId = null;
-			var averageEmotions = (score.anger + score.contempt + score.disgust) / 3;
+			var averageEmotions = score.anger + score.contempt / 2;
 
 			var data = {
 				age: faceAttributes.age,
