@@ -60,19 +60,18 @@ app.post('/s', function (req, res) {
 		});
 
 		Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
-			var identityResponse = responses[0];
-			var emotionPromise = responses[1];
-			var candidates = identityResponse[0].candidates;
-			var score = emotionPromise[0].scores;
 			var personId = null;
-			var averageEmotions = score.anger + score.contempt / 2;
+			var emotionPromise = responses[1];
+			var identityResponse = responses[0];
+			var score = emotionPromise[0].scores;
+			var candidates = identityResponse[0].candidates;
 
 			var data = {
 				age: faceAttributes.age,
 				gender: faceAttributes.gender,
 				emotion: responses[1],
 				person: null,
-				dangerZone: dangerZone.dangerZone(averageEmotions)
+				dangerZone: dangerZone.dangerZone(score.anger)
 			};			
 
 			if (candidates.length > 0) {
