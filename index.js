@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const server = require('http').createServer(app);
 const path = require('path');
 const dangerZone = require('./utility.js');
-const faceKey = "5a7bc1aa7775473dbc2a587a623682d5";
-const emotionKey = "0bff0c825fb84444bb8ca71458b5dd34";
+const faceKey = process.env.FACE_KEY || "";
+const emotionKey = process.env.EMOTION_KEY || "";
 const oxford = require('project-oxford');
 const faceClient = new oxford.Client(faceKey, 'https://westus.api.cognitive.microsoft.com');
 const emotionClient = new oxford.Client(emotionKey, 'https://westus.api.cognitive.microsoft.com');
@@ -59,7 +59,7 @@ app.post('/s', function (req, res) {
 				faceRectangles: [faceRectangle]
 			});
 
-			Promise.all([identifyPromise, emotionPromise]).then(function(responses) {
+			Promise.all([identifyPromise, emotionPromise]).then(function (responses) {
 				var personId = null;
 				var emotionPromise = responses[1];
 				var identityResponse = responses[0];
@@ -73,8 +73,8 @@ app.post('/s', function (req, res) {
 					person: null,
 					dangerZone: dangerZone.dangerZone(score.anger),
 					lyiingLevel: dangerZone.lying(score.sadness)
-					
-				};			
+
+				};
 
 				if (candidates.length > 0) {
 					personId = candidates[0].personId;
