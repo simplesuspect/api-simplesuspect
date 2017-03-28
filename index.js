@@ -48,11 +48,13 @@ app.post('/s', function (req, res) {
 			res.status(404).send("Face not found");
 		} else {
 			var faceId = response[0].faceId;
-
+			console.log('face from promise: ', response);
 			var faceRectangle = response[0].faceRectangle;
 			var faceAttributes = response[0].faceAttributes;
 
-			var identifyPromise = faceClient.face.identify([faceId], "1", 1, 0.5);
+			var identifyPromise = faceClient.face.identify([faceId], process.env.FACE_GROUP_ID, 1, 0.5).catch(function (error) {
+				console.log(error)
+			});
 
 			var emotionPromise = emotionClient.emotion.analyzeEmotion({
 				data: buffer,
@@ -60,6 +62,7 @@ app.post('/s', function (req, res) {
 			});
 
 			Promise.all([identifyPromise, emotionPromise]).then(function (responses) {
+				console.log(responses)
 				var personId = null;
 				var emotionPromise = responses[1];
 				var identityResponse = responses[0];
@@ -79,15 +82,21 @@ app.post('/s', function (req, res) {
 				if (candidates.length > 0) {
 					personId = candidates[0].personId;
 
-					faceClient.face.person.get("1", personId).then(function (person) {
+					faceClient.face.person.get(process.env.FACE_GROUP_ID, personId).then(function (person) {
 						data.person = person;
 						res.status(200).send(data);
+					}).catch(function (error) {
+						console.log('faceClient.face.person.get error:', error)
 					});
 				} else {
 					res.status(200).send(data);
 				}
+			}).catch(function (error) {
+				console.log('promise all error:', error)
 			})
 		}
+	}).catch(function (error) {
+		console.log('face promise error:', error)
 	});
 });
 
